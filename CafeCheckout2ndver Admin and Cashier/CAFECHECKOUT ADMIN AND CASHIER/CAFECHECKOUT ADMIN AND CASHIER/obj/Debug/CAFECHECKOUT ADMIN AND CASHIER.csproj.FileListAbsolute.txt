@@ -1,0 +1,22 @@
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.csproj.AssemblyReference.cache
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.LOGIN_INTERFACE.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Properties.Resources.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.csproj.GenerateResource.cache
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.csproj.CoreCompileInputs.cache
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\bin\Debug\CAFECHECKOUT ADMIN AND CASHIER.exe.config
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\bin\Debug\CAFECHECKOUT ADMIN AND CASHIER.exe
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\bin\Debug\CAFECHECKOUT ADMIN AND CASHIER.pdb
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\bin\Debug\Guna.UI2.dll
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHEC.63EC31C2.Up2Date
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.exe
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.pdb
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.AdminForm.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.CashierForm.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.AccountForm.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.History.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Statistics.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Inventory.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Addaddons.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Addproducts.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Orders.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.ManageAcc.resources

@@ -1,0 +1,56 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Mark Rainier\\OneDrive\\Documents\\CafeCheckout2ndver Admin and Cashier\\CAFECHECKOUT ADMIN AND CASHIER\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{73307185-ABEC-42C3-A862-C084654BB37F}|CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER.csproj|c:\\users\\mark rainier\\onedrive\\documents\\cafecheckout2ndver admin and cashier\\cafecheckout admin and cashier\\cafecheckout admin and cashier\\accountform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{73307185-ABEC-42C3-A862-C084654BB37F}|CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER.csproj|solutionrelative:cafecheckout admin and cashier\\accountform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{73307185-ABEC-42C3-A862-C084654BB37F}|CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER.csproj|C:\\Users\\Mark Rainier\\OneDrive\\Documents\\CafeCheckout2ndver Admin and Cashier\\CAFECHECKOUT ADMIN AND CASHIER\\cafecheckout admin and cashier\\accountform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{73307185-ABEC-42C3-A862-C084654BB37F}|CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER.csproj|solutionrelative:cafecheckout admin and cashier\\accountform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AccountForm.cs",
+              "DocumentMoniker": "C:\\Users\\Mark Rainier\\OneDrive\\Documents\\CafeCheckout2ndver Admin and Cashier\\CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs",
+              "RelativeDocumentMoniker": "CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs",
+              "ToolTip": "C:\\Users\\Mark Rainier\\OneDrive\\Documents\\CafeCheckout2ndver Admin and Cashier\\CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs",
+              "RelativeToolTip": "CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs",
+              "ViewState": "AQIAAJwAAAAAAAAAAAAQwCcAAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-30T09:03:20.677Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AccountForm.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\Mark Rainier\\OneDrive\\Documents\\CafeCheckout2ndver Admin and Cashier\\CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs",
+              "RelativeDocumentMoniker": "CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs",
+              "ToolTip": "C:\\Users\\Mark Rainier\\OneDrive\\Documents\\CafeCheckout2ndver Admin and Cashier\\CAFECHECKOUT ADMIN AND CASHIER\\CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs [Design]",
+              "RelativeToolTip": "CAFECHECKOUT ADMIN AND CASHIER\\AccountForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-30T09:03:17.678Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
