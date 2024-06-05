@@ -14,9 +14,11 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 {
     public partial class AccountForm : Form
     {
+        private string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
         private string username;
         private int currentIndex = 0;
         private List<Account> accounts;
+        private bool ButtonClicked = false;
 
         public AccountForm(string username)
         {
@@ -25,8 +27,45 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
             InitializeFlowLayoutPanel();
             LoadAccounts();
             DisplayAccount(currentIndex);
+            this.FormClosing += AccountForm_FormClosing;
+        }
+        private void AccountForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!ButtonClicked) // Check if back button was not clicked
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    UpdateAccountStatusToLoggedOut(username);
+                }
+                else
+                {
+                    e.Cancel = true; // Prevent the form from closing
+                }
+            }
         }
 
+        private void UpdateAccountStatusToLoggedOut(string username)
+        {
+            string query = "UPDATE Accounts SET ACC_STAT = 'LOGGED OUT' WHERE Username = @Username";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Username", username);
+                        int rowsAffected = command.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating account status: {ex.Message}");
+                }
+            }
+        }
         private void InitializeFlowLayoutPanel()
         {
             AccountDetails.FlowDirection = FlowDirection.TopDown;
@@ -147,6 +186,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
         private void Back_but_Click(object sender, EventArgs e)
         {
+            ButtonClicked = true;
             AdminForm admin = new AdminForm(username);
             admin.Refresh();
             admin.Show();
@@ -155,6 +195,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
         private void ManageAccButt_Click(object sender, EventArgs e)
         {
+            ButtonClicked = true;
             ManageAcc manageAcc = new ManageAcc(username);
             manageAcc.Refresh();
             manageAcc.Show();
@@ -163,7 +204,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
         private void AccountForm_Load(object sender, EventArgs e)
         {
-
+           
         }
     }
 

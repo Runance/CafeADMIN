@@ -17,6 +17,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
         private string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
         private string username;
         private byte[] selectedImage = null;
+        private bool ButtonClicked = false;
 
         public Addproducts(string username)
         {
@@ -25,8 +26,38 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
             // Ensure the event handler is attached
             IDtextBox1.TextChanged += IDtextBox1_TextChanged;
+            this.FormClosing += Addproducts_FormClosing;
+        }
+        private void Addproducts_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!ButtonClicked) // Check if back button was not clicked
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    UpdateAccountStatusToLoggedOut(username);
+                }
+                else
+                {
+                    e.Cancel = true; // Prevent the form from closing
+                }
+            }
         }
 
+        private void UpdateAccountStatusToLoggedOut(string username)
+        {
+            string query = "UPDATE Accounts SET ACC_STAT = 'LOGGED OUT' WHERE Username = @Username";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
         private void AddProduct_Click(object sender, EventArgs e)
         {
             try
@@ -63,8 +94,8 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                             return;
                         }
 
-                        // Add product to the database
-                        string query = "INSERT INTO Products (Product_Id, Product_Name, Description, Price, Stock, IMAGE) VALUES (@ProductId, @ProductName, @Description, @Price, @Stock, @Image)";
+                        // Add product to the database with Pro_Status set to 0
+                        string query = "INSERT INTO Products (Product_Id, Product_Name, Description, Price, Stock, IMAGE, Pro_Status) VALUES (@ProductId, @ProductName, @Description, @Price, @Stock, @Image, 0)";
                         SqlCommand command = new SqlCommand(query, connection);
                         command.Parameters.AddWithValue("@ProductId", IDtextBox1.Text);
                         command.Parameters.AddWithValue("@ProductName", NametextBox2.Text);
@@ -82,7 +113,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                     }
                 }
             }
-            catch 
+            catch
             {
                 MessageBox.Show("Please Complete All Provided Details");
             }
@@ -98,13 +129,25 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                     return;
                 }
 
-                DialogResult dialogResult = MessageBox.Show("Do you want to update this product?", "Confirm Update", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
-                    {
-                        connection.Open();
+                    connection.Open();
 
+                    // Check if the product is archived
+                    string checkQuery = "SELECT Pro_Status FROM Products WHERE Product_Id = @ProductId";
+                    SqlCommand checkCommand = new SqlCommand(checkQuery, connection);
+                    checkCommand.Parameters.AddWithValue("@ProductId", IDtextBox1.Text);
+
+                    int status = (int)checkCommand.ExecuteScalar();
+                    if (status == 1)
+                    {
+                        MessageBox.Show("Product is deleted and cannot be updated.");
+                        return;
+                    }
+
+                    DialogResult dialogResult = MessageBox.Show("Do you want to update this product?", "Confirm Update", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
                         // Build the update query dynamically based on which fields are provided
                         string query = "UPDATE Products SET ";
                         var parameters = new List<SqlParameter>();
@@ -144,16 +187,14 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                         command.ExecuteNonQuery();
                         MessageBox.Show("Product updated successfully.");
                         ClearFields();
-                        
                     }
                 }
             }
-            catch 
+            catch
             {
-                MessageBox.Show("Please Complete All Provided Details");
+                MessageBox.Show("Please complete all provided details.");
             }
         }
-
         private void DeleteProduct_Click(object sender, EventArgs e)
         {
             try
@@ -164,14 +205,14 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                     return;
                 }
 
-                DialogResult dialogResult = MessageBox.Show("Do you want to delete this product?", "Confirm Delete", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = MessageBox.Show("Do you want to delete this product?", "Confirm Archive", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
 
-                        string query = "DELETE FROM Products WHERE Product_Id = @ProductId";
+                        string query = "UPDATE Products SET Pro_Status = 1 WHERE Product_Id = @ProductId";
                         SqlCommand command = new SqlCommand(query, connection);
                         command.Parameters.AddWithValue("@ProductId", IDtextBox1.Text);
 
@@ -183,7 +224,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while deleting the product: " + ex.Message);
+                MessageBox.Show("An error occurred while archiving the product: " + ex.Message);
             }
         }
 
@@ -191,14 +232,14 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
         {
             try
             {
-                DialogResult dialogResult = MessageBox.Show("Are you sure you want to delete all products?", "Confirm Delete All", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = MessageBox.Show("Are you sure you want to archive all products?", "Confirm Archive All", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
 
-                        string query = "DELETE FROM Products";
+                        string query = "UPDATE Products SET Pro_Status = 1";
                         SqlCommand command = new SqlCommand(query, connection);
 
                         command.ExecuteNonQuery();
@@ -209,7 +250,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while clearing all products: " + ex.Message);
+                MessageBox.Show("An error occurred while archiving all products: " + ex.Message);
             }
         }
 
@@ -246,7 +287,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                 {
                     connection.Open();
 
-                    string query = "SELECT Product_Name, Description, Price, Stock, IMAGE FROM Products WHERE Product_Id = @ProductId";
+                    string query = "SELECT Product_Name, Description, Price, Stock, IMAGE FROM Products WHERE Product_Id = @ProductId AND Pro_Status = 0";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@ProductId", IDtextBox1.Text);
 
@@ -315,6 +356,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
         private void Back_but_Click(object sender, EventArgs e)
         {
+            ButtonClicked = true;
             Inventory inventory = new Inventory(username);
             inventory.Show();
             this.Close();

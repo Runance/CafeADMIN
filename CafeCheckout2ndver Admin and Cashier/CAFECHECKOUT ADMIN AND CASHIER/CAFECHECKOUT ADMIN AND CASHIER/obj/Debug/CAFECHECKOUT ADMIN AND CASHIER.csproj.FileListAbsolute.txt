@@ -20,3 +20,7 @@ C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CA
 C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Addproducts.resources
 C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.Orders.resources
 C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT_ADMIN_AND_CASHIER.ManageAcc.resources
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\bin\Debug\CAFECHECKOUT ADMIN AND CASHIER.exe.manifest
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\bin\Debug\CAFECHECKOUT ADMIN AND CASHIER.application
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.exe.manifest
+C:\Users\Mark Rainier\OneDrive\Documents\CafeCheckout2ndver Admin and Cashier\CAFECHECKOUT ADMIN AND CASHIER\CAFECHECKOUT ADMIN AND CASHIER\obj\Debug\CAFECHECKOUT ADMIN AND CASHIER.application

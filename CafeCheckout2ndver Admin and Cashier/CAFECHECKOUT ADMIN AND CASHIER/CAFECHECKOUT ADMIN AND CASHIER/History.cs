@@ -15,6 +15,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
     {
         private string username;
         private string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
+        private bool isBackButtonClicked = false;
 
         // Declare a DataTable to store the data
         private DataTable dataTable;
@@ -34,8 +35,39 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
             // Load data initially
             LoadData();
+
+            this.FormClosing += History_FormClosing;
+        }
+        private void History_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isBackButtonClicked) // Check if back button was not clicked
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    UpdateAccountStatusToLoggedOut(username);
+                }
+                else
+                {
+                    e.Cancel = true; // Prevent the form from closing
+                }
+            }
         }
 
+        private void UpdateAccountStatusToLoggedOut(string username)
+        {
+            string query = "UPDATE Accounts SET ACC_STAT = 'LOGGED OUT' WHERE Username = @Username";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
         private void LoadRole()
         {
             string query = "SELECT Role FROM Accounts WHERE Username = @username";
@@ -137,6 +169,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
+            isBackButtonClicked = true;
             AdminForm adminForm = new AdminForm(username);
             adminForm.Refresh();
             adminForm.Show();

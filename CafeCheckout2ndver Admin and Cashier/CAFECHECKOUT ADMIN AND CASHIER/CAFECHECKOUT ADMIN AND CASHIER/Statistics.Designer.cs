@@ -165,7 +165,7 @@
             this.guna2HtmlLabel3.Name = "guna2HtmlLabel3";
             this.guna2HtmlLabel3.Size = new System.Drawing.Size(253, 43);
             this.guna2HtmlLabel3.TabIndex = 32;
-            this.guna2HtmlLabel3.Text = "Total Costumer";
+            this.guna2HtmlLabel3.Text = "Total Customer";
             this.guna2HtmlLabel3.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
             // 
             // guna2HtmlLabel4

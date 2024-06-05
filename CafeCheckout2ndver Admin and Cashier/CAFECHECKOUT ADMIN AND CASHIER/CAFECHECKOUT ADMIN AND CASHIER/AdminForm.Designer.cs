@@ -52,7 +52,7 @@
             this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             this.guna2HtmlLabel1.Size = new System.Drawing.Size(660, 98);
             this.guna2HtmlLabel1.TabIndex = 0;
-            this.guna2HtmlLabel1.Text = "\"CafeCheckOut\"";
+            this.guna2HtmlLabel1.Text = "CafeCheckOut";
             this.guna2HtmlLabel1.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
             // 
             // Signout_But

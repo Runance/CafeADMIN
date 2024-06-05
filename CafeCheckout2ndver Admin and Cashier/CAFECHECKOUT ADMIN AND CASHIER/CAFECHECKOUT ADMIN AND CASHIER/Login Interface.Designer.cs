@@ -49,7 +49,7 @@
             this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             this.guna2HtmlLabel1.Size = new System.Drawing.Size(868, 206);
             this.guna2HtmlLabel1.TabIndex = 0;
-            this.guna2HtmlLabel1.Text = "\"CafeCheckOut\"\r\n         LOGIN";
+            this.guna2HtmlLabel1.Text = "CafeCheckOut\r\n         LOGIN";
             this.guna2HtmlLabel1.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
             // 
             // TextBox1

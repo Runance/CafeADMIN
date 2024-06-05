@@ -67,7 +67,7 @@
             this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
             this.guna2HtmlLabel1.Size = new System.Drawing.Size(364, 58);
             this.guna2HtmlLabel1.TabIndex = 1;
-            this.guna2HtmlLabel1.Text = "\"CafeCheckOut\"";
+            this.guna2HtmlLabel1.Text = "CafeCheckOut";
             this.guna2HtmlLabel1.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
             // 
             // Signout_But
@@ -237,7 +237,7 @@
             this.guna2HtmlLabel2.Name = "guna2HtmlLabel2";
             this.guna2HtmlLabel2.Size = new System.Drawing.Size(280, 32);
             this.guna2HtmlLabel2.TabIndex = 17;
-            this.guna2HtmlLabel2.Text = "Costumers Information";
+            this.guna2HtmlLabel2.Text = "Customers Information";
             // 
             // guna2HtmlLabel3
             // 
@@ -337,7 +337,7 @@
             this.guna2HtmlLabel5.Name = "guna2HtmlLabel5";
             this.guna2HtmlLabel5.Size = new System.Drawing.Size(230, 25);
             this.guna2HtmlLabel5.TabIndex = 23;
-            this.guna2HtmlLabel5.Text = "Enter Costumer Balance";
+            this.guna2HtmlLabel5.Text = "Enter Customer Balance";
             // 
             // guna2HtmlLabel6
             // 

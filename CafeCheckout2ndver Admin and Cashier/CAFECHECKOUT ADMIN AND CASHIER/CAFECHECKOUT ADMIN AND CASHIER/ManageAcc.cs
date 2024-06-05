@@ -17,6 +17,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
         private string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
         private string username;
         private byte[] selectedImage = null;
+        private bool ButtonClicked = false;
 
         public ManageAcc(string username)
         {
@@ -25,6 +26,37 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 
             // Ensure the event handler is attached
             IDtextbox.TextChanged += IDtextbox_TextChanged;
+            this.FormClosing += ManageAcc_FormClosing;
+        }
+        private void ManageAcc_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!ButtonClicked) // Check if back button was not clicked
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    UpdateAccountStatusToLoggedOut(username);
+                }
+                else
+                {
+                    e.Cancel = true; // Prevent the form from closing
+                }
+            }
+        }
+
+        private void UpdateAccountStatusToLoggedOut(string username)
+        {
+            string query = "UPDATE Accounts SET ACC_STAT = 'LOGGED OUT' WHERE Username = @Username";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         private void Add_Account_Click(object sender, EventArgs e)
@@ -317,6 +349,7 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
         }
         private void Back_but_Click(object sender, EventArgs e)
         {
+            ButtonClicked = true;
             AccountForm accountForm = new AccountForm(username);
             accountForm.Refresh();
             accountForm.Show();

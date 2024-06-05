@@ -15,7 +15,10 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
 {
     public partial class CashierForm : Form
     {
+
         private string username;
+        private bool isBackButtonClicked = false;
+
         public CashierForm(string username)
         {
             InitializeComponent();
@@ -23,7 +26,6 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
             SetPlaceholder();
             this.username = username;
 
-            // Check the user's role and set the Backbutt visibility accordingly
             using (var connection = new SqlConnection(@"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;"))
             {
                 connection.Open();
@@ -49,8 +51,39 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                     }
                 }
             }
+            this.FormClosing += CashierForm_FormClosing;
+        }
+        private void CashierForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isBackButtonClicked) // Check if back button was not clicked
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    UpdateAccountStatusToLoggedOut(username);
+                }
+                else
+                {
+                    e.Cancel = true; // Prevent the form from closing
+                }
+            }
         }
 
+        private void UpdateAccountStatusToLoggedOut(string username)
+        {
+            string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
+            string query = "UPDATE Accounts SET ACC_STAT = 'LOGGED OUT' WHERE Username = @Username";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
         private void AssignButtonClickEvents()
         {
             btn1.Click += NumPadButton_Click;
@@ -66,7 +99,6 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
             btnEnter.Click += BtnEnter_Click;
             btnClear.Click += BtnClear_Click;
             Proceed.Click += Proceed_Click;
-            
         }
 
         private void SetPlaceholder()
@@ -120,6 +152,18 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
         {
             if (int.TryParse(txtQueueNumber.Text, out int queueNumber))
             {
+                if (!IsCustomerAvailable(queueNumber))
+                {
+                    MessageBox.Show("This customer is not available.");
+                    return;
+                }
+
+                if (IsCustomerCompleted(queueNumber))
+                {
+                    MessageBox.Show("This customer has already completed the transaction.");
+                    return;
+                }
+
                 FetchTransactionData(queueNumber);
             }
             else
@@ -127,51 +171,163 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                 MessageBox.Show("Invalid queue number!");
             }
         }
+        private bool IsCustomerAvailable(int queueNumber)
+        {
+            string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
+            string query = @"
+            SELECT c.Entry_type, t.Status
+            FROM dbo.Customer c
+            LEFT JOIN dbo.Transactions t ON c.Customer_Id = t.Customer_Id
+            WHERE c.Queuing_num = @QueueNumber";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@QueueNumber", queueNumber);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string entryType = reader["Entry_type"].ToString();
+                            string status = reader["Status"].ToString();
+
+                            if (entryType == "Cancelled" || status == "Cancelled")
+                            {
+                                return false; // Customer is not available
+                            }
+                        }
+                    }
+                }
+            }
+            return true; // Customer is available
+        }
+        private bool IsCustomerCompleted(int queueNumber)
+        {
+            string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
+            string query = @"
+            SELECT COUNT(*)
+            FROM dbo.Transactions t
+            INNER JOIN dbo.Customer c ON t.Customer_Id = c.Customer_Id
+            WHERE c.Queuing_num = @QueueNumber AND t.Status = 'Complete'";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@QueueNumber", queueNumber);
+                    int count = (int)command.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
 
         private void FetchTransactionData(int queueNumber)
         {
             string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
             string query = @"
-                SELECT t.Transaction_Id, t.Customer_Id, t.Product_Id, t.Quantity, t.Addon_Id, t.Addon_Quantity, t.Total_Price, t.Status, t.Transaction_Time
-                FROM dbo.Transactions t
-                INNER JOIN dbo.Customer c ON t.Customer_Id = c.Customer_Id
-                WHERE c.Queuing_num = @QueueNumber AND t.Status <> 'Complete'";
+            SELECT t.Transaction_Id, t.Customer_Id, c.Queuing_num, p.Product_Name, t.Quantity, a.Addon_Name, t.Addon_Quantity, t.Total_Price
+            FROM dbo.Transactions t
+            INNER JOIN dbo.Customer c ON t.Customer_Id = c.Customer_Id
+            INNER JOIN dbo.Products p ON t.Product_Id = p.Product_Id
+            LEFT JOIN dbo.Add_Ons a ON t.Addon_Id = a.Addon_Id
+            WHERE t.Status <> 'Complete' AND c.Queuing_num = @QueueNumber";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@QueueNumber", queueNumber);
                 connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-                flpTransactionData.Controls.Clear();
-
-                while (reader.Read())
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    string transactionText = $"Customer ID: {reader["Customer_Id"]}\n" +
-                                             $"Transaction ID: {reader["Transaction_Id"]}\n" +
-                                             $"Product ID: {reader["Product_Id"]}\n" +
-                                             $"Quantity: {reader["Quantity"]}\n" +
-                                             $"Addon ID: {reader["Addon_Id"]}\n" +
-                                             $"Addon Quantity: {reader["Addon_Quantity"]}\n" +
-                                             $"Total Price: {reader["Total_Price"]}\n" +
-                                             $"Status: {reader["Status"]}\n" +
-                                             $"Transaction Time: {reader["Transaction_Time"]}";
-
-                    Label lblTransaction = new Label
+                    command.Parameters.AddWithValue("@QueueNumber", queueNumber);
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        Text = transactionText,
-                        AutoSize = true,
-                        Font = new Font("Rockwell", 20, FontStyle.Italic),
-                        Padding = new Padding(0, 0, 0, 0) // Add some padding between transactions
-                    };
-                    flpTransactionData.Controls.Add(lblTransaction);
-                }
+                        flpTransactionData.Controls.Clear();
+                        decimal totalPrice = 0;
+                        string customerId = string.Empty;
+                        int queuingNum = 0;
+                        List<string> productDetails = new List<string>();
+                        List<string> addonDetails = new List<string>();
 
-                reader.Close();
+                        while (reader.Read())
+                        {
+                            customerId = reader["Customer_Id"].ToString();
+                            queuingNum = (int)reader["Queuing_num"];
+                            string productName = reader["Product_Name"].ToString();
+                            int quantity = (int)reader["Quantity"];
+                            string addonName = reader["Addon_Name"].ToString();
+                            int addonQuantity = (int)reader["Addon_Quantity"];
+                            decimal price = (decimal)reader["Total_Price"];
+                            totalPrice += price;
+
+                            productDetails.Add($"Product: {productName}, Quantity: {quantity}");
+                            addonDetails.Add($"Addon: {addonName}, Addon Quantity: {addonQuantity}");
+                        }
+
+                        if (!string.IsNullOrEmpty(customerId))
+                        {
+                            // Display customer ID and queue number
+                            Label customerInfoLabel = new Label
+                            {
+                                Text = $"Customer ID: {customerId}",
+                                AutoSize = true,
+                                Font = new Font("Rockwell", 20, FontStyle.Italic)
+                            };
+                            flpTransactionData.Controls.Add(customerInfoLabel);
+
+                            Label queueNumLabel = new Label
+                            {
+                                Text = $"Queue Number: {queuingNum}",
+                                AutoSize = true,
+                                Font = new Font("Rockwell", 20, FontStyle.Italic)
+                            };
+                            flpTransactionData.Controls.Add(queueNumLabel);
+
+                            // Display products
+                            foreach (string productDetail in productDetails)
+                            {
+                                Label productLabel = new Label
+                                {
+                                    Text = productDetail,
+                                    AutoSize = true,
+                                    Font = new Font("Rockwell", 20, FontStyle.Italic)
+                                };
+                                flpTransactionData.Controls.Add(productLabel);
+                            }
+
+                            // Display addons
+                            foreach (string addonDetail in addonDetails)
+                            {
+                                Label addonLabel = new Label
+                                {
+                                    Text = addonDetail,
+                                    AutoSize = true,
+                                    Font = new Font("Rockwell", 20, FontStyle.Italic)
+                                };
+                                flpTransactionData.Controls.Add(addonLabel);
+                            }
+
+                            // Display total price
+                            Label totalPriceLabel = new Label
+                            {
+                                Text = $"Total Price: {totalPrice:C}",
+                                AutoSize = true,
+                                Font = new Font("Rockwell", 20, FontStyle.Italic)
+                            };
+                            flpTransactionData.Controls.Add(totalPriceLabel);
+
+                            // Make the FlowLayoutPanel scrollable
+                            flpTransactionData.AutoScroll = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show("No transactions found for the given queue number.");
+                        }
+                    }
+                }
             }
         }
-
         private void Proceed_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(txtQueueNumber.Text, out int queueNumber))
@@ -197,237 +353,279 @@ namespace CAFECHECKOUT_ADMIN_AND_CASHIER
                 }
             }
 
+            decimal totalPrice = GetTotalPrice(queueNumber);
+
+            // Check if the total price exceeds the customer's money limit
+            if (totalPrice > customerMoney)
+            {
+                MessageBox.Show("Customer's money is not enough to cover the total price!");
+                return;
+            }
+
             CompleteTransaction(queueNumber, customerMoney, discountPercent, txtDiscountCode.Text);
+        }
+
+
+        private decimal GetTotalPrice(int queueNumber)
+        {
+            string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
+            string query = @"
+                SELECT SUM(t.Total_Price) AS TotalPrice
+                FROM dbo.Transactions t
+                INNER JOIN dbo.Customer c ON t.Customer_Id = c.Customer_Id
+                WHERE c.Queuing_num = @QueueNumber AND t.Status <> 'Complete'";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@QueueNumber", queueNumber);
+                    object result = command.ExecuteScalar();
+                    if (result != null && decimal.TryParse(result.ToString(), out decimal totalPrice))
+                    {
+                        return totalPrice;
+                    }
+                }
+            }
+            return 0;
         }
 
         private decimal GetDiscountPercent(string discountCode)
         {
             string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
-            string query = "SELECT DiscountPercent FROM dbo.DiscountCodes WHERE Code = @Code";
+            string query = "SELECT DiscountPercent FROM dbo.DiscountCodes WHERE Code = @DiscountCode";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Code", discountCode);
                 connection.Open();
-
-                object result = command.ExecuteScalar();
-                if (result != null && decimal.TryParse(result.ToString(), out decimal discountPercent))
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    return discountPercent;
+                    command.Parameters.AddWithValue("@DiscountCode", discountCode);
+                    object result = command.ExecuteScalar();
+                    if (result != null && decimal.TryParse(result.ToString(), out decimal discountPercent))
+                    {
+                        return discountPercent;
+                    }
                 }
             }
-
-            return -1; // Invalid discount code
+            return -1;
         }
 
         private void CompleteTransaction(int queueNumber, decimal customerMoney, decimal discountPercent, string discountCode)
         {
             string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
-            string fetchQuery = @"
-        SELECT t.Transaction_Id, t.Customer_Id, t.Product_Id, t.Quantity, t.Addon_Id, t.Addon_Quantity, t.Total_Price
-        FROM dbo.Transactions t
-        INNER JOIN dbo.Customer c ON t.Customer_Id = c.Customer_Id
-        INNER JOIN dbo.Products p ON t.Product_Id = p.Product_Id
-        WHERE c.Queuing_num = @QueueNumber AND t.Status <> 'Complete'";
+            string query = @"
+            SELECT t.Customer_Id, t.Transaction_Id, t.Total_Price, t.Product_Id, p.Product_Name, t.Quantity, a.Addon_Id, a.Addon_Name, t.Addon_Quantity, t.Transaction_Time
+            FROM dbo.Transactions t
+            INNER JOIN dbo.Customer c ON t.Customer_Id = c.Customer_Id
+            LEFT JOIN dbo.Products p ON t.Product_Id = p.Product_Id
+            LEFT JOIN dbo.Add_Ons a ON t.Addon_Id = a.Addon_Id
+            WHERE c.Queuing_num = @QueueNumber AND t.Status <> 'Complete'";
 
-            string insertQuery = @"
-        INSERT INTO dbo.Trsn_Complete (Transaction_Id, Customer_Id, Product_Id, Quantity, Addon_Id, Addon_Quantity, Total_Price, Costumer_Money, Discount_Code, Final_Price, Change_Amount, Transaction_DateTime)
-        VALUES (@Transaction_Id, @Customer_Id, @Product_Id, @Quantity, @Addon_Id, @Addon_Quantity, @Total_Price, @Customer_Money, @Discount_Code, @Final_Price, @Change_Amount, @Transaction_DateTime)";
-
-            string updateStatusQuery = @"
-        UPDATE dbo.Transactions
-        SET Status = 'Complete'
-        WHERE Transaction_Id = @Transaction_Id";
-
-            List<Tuple<int, string, string, int, string, int?, decimal>> transactions = new List<Tuple<int, string, string, int, string, int?, decimal>>();
+            List<(string CustomerId, string TransactionId, string ProductId, string ProductName, int Quantity, string AddonId, string AddonName, int AddonQuantity, decimal TotalPrice, DateTime TransactionTime, int QueueNumber)> transactions = new List<(string, string, string, string, int, string, string, int, decimal, DateTime, int)>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-
-                SqlCommand fetchCommand = new SqlCommand(fetchQuery, connection);
-                fetchCommand.Parameters.AddWithValue("@QueueNumber", queueNumber);
-
-                using (SqlDataReader reader = fetchCommand.ExecuteReader())
+                using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    if (!reader.HasRows)
+                    command.Parameters.AddWithValue("@QueueNumber", queueNumber);
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        MessageBox.Show("No transactions found for the given queue number!");
-                        return;
-                    }
-
-                    while (reader.Read())
-                    {
-                        int transactionId = (int)reader["Transaction_Id"];
-                        string customerId = reader["Customer_Id"].ToString();
-                        string productId = reader["Product_Id"].ToString();
-                        int quantity = (int)reader["Quantity"];
-                        string addonId = reader["Addon_Id"] as string;
-                        int? addonQuantity = reader["Addon_Quantity"] as int?;
-                        decimal totalPrice = (decimal)reader["Total_Price"];
-
-                        transactions.Add(Tuple.Create(transactionId, customerId, productId, quantity, addonId, addonQuantity, totalPrice));
+                        while (reader.Read())
+                        {
+                            string customerId = reader["Customer_Id"].ToString();
+                            string transactionId = reader["Transaction_Id"].ToString();
+                            string productId = reader["Product_Id"].ToString();
+                            string productName = reader["Product_Name"].ToString();
+                            int quantity = (int)reader["Quantity"];
+                            string addonId = reader["Addon_Id"].ToString();
+                            string addonName = reader["Addon_Name"].ToString();
+                            int addonQuantity = (int)reader["Addon_Quantity"];
+                            decimal totalPrice = (decimal)reader["Total_Price"];
+                            DateTime transactionTime = (DateTime)reader["Transaction_Time"];
+                            transactions.Add((customerId, transactionId, productId, productName, quantity, addonId, addonName, addonQuantity, totalPrice, transactionTime, queueNumber));
+                        }
                     }
                 }
 
-                foreach (var transaction in transactions)
+                if (transactions.Count == 0)
                 {
-                    int transactionId = transaction.Item1;
-                    string customerId = transaction.Item2;
-                    string productId = transaction.Item3;
-                    int quantity = transaction.Item4;
-                    string addonId = transaction.Item5;
-                    int? addonQuantity = transaction.Item6;
-                    decimal totalPrice = transaction.Item7;
-
-                    decimal finalPrice = totalPrice * (1 - discountPercent / 100);
-                    finalPrice = Math.Max(finalPrice, 0); // Ensure final price is not negative
-
-                    decimal changeAmount = customerMoney - finalPrice;
-
-                    if (finalPrice > customerMoney)
-                    {
-                        MessageBox.Show("Customer money is not enough to cover the total price!");
-                        return;
-                    }
-
-                    // Ensure no cashback
-                    if (discountPercent >= 100)
-                    {
-                        finalPrice = 0;
-                        changeAmount = customerMoney; // In case of 100% discount, change should be equal to customer money
-                    }
-
-                    // Get current date and time
-                    DateTime transactionDateTime = DateTime.Now;
-
-                    // Insert into Trsn_Complete
-                    SqlCommand insertCommand = new SqlCommand(insertQuery, connection);
-                    insertCommand.Parameters.AddWithValue("@Transaction_Id", transactionId);
-                    insertCommand.Parameters.AddWithValue("@Customer_Id", customerId);
-                    insertCommand.Parameters.AddWithValue("@Product_Id", productId);
-                    insertCommand.Parameters.AddWithValue("@Quantity", quantity);
-                    insertCommand.Parameters.AddWithValue("@Addon_Id", addonId ?? (object)DBNull.Value);
-                    insertCommand.Parameters.AddWithValue("@Addon_Quantity", addonQuantity ?? (object)DBNull.Value);
-                    insertCommand.Parameters.AddWithValue("@Total_Price", totalPrice);
-                    insertCommand.Parameters.AddWithValue("@Customer_Money", customerMoney);
-                    insertCommand.Parameters.AddWithValue("@Discount_Code", string.IsNullOrWhiteSpace(discountCode) ? (object)DBNull.Value : discountCode);
-                    insertCommand.Parameters.AddWithValue("@Final_Price", finalPrice);
-                    insertCommand.Parameters.AddWithValue("@Change_Amount", changeAmount);
-                    insertCommand.Parameters.AddWithValue("@Transaction_DateTime", transactionDateTime);
-
-                    insertCommand.ExecuteNonQuery();
-
-                    // Update status in Transactions
-                    SqlCommand updateStatusCommand = new SqlCommand(updateStatusQuery, connection);
-                    updateStatusCommand.Parameters.AddWithValue("@Transaction_Id", transactionId);
-                    updateStatusCommand.ExecuteNonQuery();
-
-                    // Print receipt
-                    PrintReceipt(transactionId, customerId, productId, quantity, addonId, addonQuantity, totalPrice, finalPrice, discountPercent, customerMoney, changeAmount, transactionDateTime);
+                    MessageBox.Show("No transactions found for the given queue number.", "No Transactions", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
                 }
+
+                foreach (var (customerId, transactionId, productId, productName, quantity, addonId, addonName, addonQuantity, totalPrice, transactionTime, queueNum) in transactions)
+                {
+                    decimal discountAmount = totalPrice * (discountPercent / 100);
+                    decimal discountedTotal = totalPrice - discountAmount;
+                    decimal change = customerMoney - discountedTotal;
+
+                    string insertQuery = @"
+                    INSERT INTO dbo.Trsn_Complete (Transaction_Id, Customer_Id, Product_Id, Quantity, Addon_Id, Addon_Quantity, Total_Price, Costumer_Money, Discount_Code, Final_Price, Change_Amount, Transaction_DateTime)
+                    VALUES (@TransactionId, @CustomerId, @ProductId, @Quantity, @AddonId, @AddonQuantity, @TotalPrice, @CustomerMoney, @DiscountCode, @FinalPrice, @ChangeAmount, @TransactionDateTime)";
+
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        insertCommand.Parameters.AddWithValue("@TransactionId", transactionId);
+                        insertCommand.Parameters.AddWithValue("@CustomerId", customerId);
+                        insertCommand.Parameters.AddWithValue("@ProductId", productId);
+                        insertCommand.Parameters.AddWithValue("@Quantity", quantity);
+                        insertCommand.Parameters.AddWithValue("@AddonId", string.IsNullOrWhiteSpace(addonId) ? DBNull.Value : (object)addonId);
+                        insertCommand.Parameters.AddWithValue("@AddonQuantity", addonQuantity);
+                        insertCommand.Parameters.AddWithValue("@TotalPrice", totalPrice);
+                        insertCommand.Parameters.AddWithValue("@CustomerMoney", customerMoney);
+                        insertCommand.Parameters.AddWithValue("@DiscountCode", string.IsNullOrWhiteSpace(discountCode) ? DBNull.Value : (object)discountCode);
+                        insertCommand.Parameters.AddWithValue("@FinalPrice", discountedTotal);
+                        insertCommand.Parameters.AddWithValue("@ChangeAmount", change);
+                        insertCommand.Parameters.AddWithValue("@TransactionDateTime", transactionTime);
+                        insertCommand.ExecuteNonQuery();
+                    }
+
+                    string updateQuery = "UPDATE dbo.Transactions SET Status = 'Complete' WHERE Transaction_Id = @TransactionId";
+
+                    using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@TransactionId", transactionId);
+                        updateCommand.ExecuteNonQuery();
+                    }
+                }
+
+                // Print the receipt after all updates are done
+                var printTransactions = transactions.Select(t => (t.TransactionId, t.CustomerId, t.ProductName, t.Quantity, t.AddonName, t.AddonQuantity, t.TransactionTime, t.TotalPrice, t.QueueNumber)).ToList();
+                PrintReceipt(printTransactions, customerMoney, customerMoney - transactions.Sum(t => t.TotalPrice) + (transactions.Sum(t => t.TotalPrice) * (discountPercent / 100)), discountPercent, discountCode);
+
+                // Show message after printing
+                MessageBox.Show("Transaction complete! Receipt printed.", "Transaction Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Clear the display on the flow layout panel
+                flpTransactionData.Controls.Clear();
             }
-
-            MessageBox.Show("Transaction completed successfully!");
         }
 
-        private void PrintReceipt(int transactionId, string customerId, string productId, int quantity, string addonId,int? addonQuantity, decimal totalPrice, decimal finalPrice, decimal discountPercent, decimal customerMoney, decimal changeAmount, DateTime transactionDateTime)
+        private void PrintReceipt(List<(string TransactionId, string CustomerId, string ProductName, int Quantity, string AddonName, int AddonQuantity, DateTime TransactionTime, decimal TotalPrice, int QueueNumber)> transactions, decimal customerMoney, decimal change, decimal discountPercent, string discountCode)
         {
             PrintDocument printDocument = new PrintDocument();
             printDocument.PrintPage += (sender, e) =>
             {
-                StringBuilder receipt = new StringBuilder();
-                receipt.AppendLine("CafeCheckOut Reciept");
-                receipt.AppendLine("-------------------------------------");
-                receipt.AppendLine($"Transaction ID: {transactionId}");
-                receipt.AppendLine($"Customer ID: {customerId}");
-                receipt.AppendLine("-------------------------------------");
-                receipt.AppendLine($"Product ID: {productId}");
-                receipt.AppendLine($"Quantity: {quantity}");
-                if (!string.IsNullOrWhiteSpace(addonId))
+                int yPos = 0;
+                Font printFont = new Font("Rockwell", 15, FontStyle.Italic);
+                Font boldFont = new Font("Rockwell", 15, FontStyle.Italic);
+
+                // Shop Name
+                e.Graphics.DrawString("CafeCheckOut", boldFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                // Partition
+                e.Graphics.DrawString(new string('-', 40), printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                var firstTransaction = transactions.FirstOrDefault();
+                if (firstTransaction != default)
                 {
-                receipt.AppendLine($"Addon ID: {addonId}");
-                receipt.AppendLine($"Addon Quantity: {addonQuantity}");
+                    e.Graphics.DrawString($"Customer ID: {firstTransaction.CustomerId}", printFont, Brushes.Black, new PointF(0, yPos));
+                    yPos += 30;
+                    e.Graphics.DrawString($"Queue Number: {firstTransaction.QueueNumber}", printFont, Brushes.Black, new PointF(0, yPos));
+                    yPos += 30;
                 }
-                receipt.AppendLine($"Total Price: {totalPrice:C}");
-                if (discountPercent > 0)
+
+                decimal totalAmount = 0;
+
+                bool isFirstTransaction = true;
+                foreach (var transaction in transactions)
                 {
-               receipt.AppendLine($"Discount: {discountPercent}%");
-                }
-                receipt.AppendLine($"Customer Money: {customerMoney:C}");
-                receipt.AppendLine($"Final Price: {finalPrice:C}");
-                receipt.AppendLine($"Change Amount: {changeAmount:C}");
-                receipt.AppendLine($"Date and Time: {transactionDateTime}");
-                receipt.AppendLine("-------------------------------------");
-                receipt.AppendLine("Thank you!");
-           
+                    e.Graphics.DrawString($"Product Name: {transaction.ProductName}", printFont, Brushes.Black, new PointF(0, yPos));
+                    yPos += 30;
 
-                // Define font
-                Font font = new Font("Rockwell", 25, FontStyle.Italic);
-                float yPos = 5;
-                float leftMargin = e.MarginBounds.Left;
+                    e.Graphics.DrawString($"Quantity: {transaction.Quantity}", printFont, Brushes.Black, new PointF(0, yPos));
+                    yPos += 30;
 
-                // Split the receipt text into lines
-                string[] lines = receipt.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-                foreach (string line in lines)
-                {
-                    e.Graphics.DrawString(line, font, Brushes.Black, new PointF(leftMargin, yPos), new StringFormat
+                    if (!string.IsNullOrEmpty(transaction.AddonName))
                     {
-                        Alignment = StringAlignment.Near
-                    });
+                        e.Graphics.DrawString($"Addon Name: {transaction.AddonName}", printFont, Brushes.Black, new PointF(0, yPos));
+                        yPos += 30;
 
-                    yPos += font.GetHeight(e.Graphics);
+                        e.Graphics.DrawString($"Addon Quantity: {transaction.AddonQuantity}", printFont, Brushes.Black, new PointF(0, yPos));
+                        yPos += 30;
+                    }
+
+                    if (isFirstTransaction)
+                    {
+                        e.Graphics.DrawString($"Transaction Time: {transaction.TransactionTime:HH:mm}", printFont, Brushes.Black, new PointF(0, yPos));
+                        yPos += 30;
+                        isFirstTransaction = false;
+                    }
+
+                    e.Graphics.DrawString($"Total Price: {transaction.TotalPrice:C}", printFont, Brushes.Black, new PointF(0, yPos));
+                    yPos += 30;
+
+                    totalAmount += transaction.TotalPrice;
+
+                    e.Graphics.DrawString(new string('-', 40), printFont, Brushes.Black, new PointF(0, yPos));
+                    yPos += 30;
                 }
+
+                decimal discountAmount = totalAmount * (discountPercent / 100);
+                decimal finalPrice = totalAmount - discountAmount;
+
+                e.Graphics.DrawString($"Total Amount: {totalAmount:C}", printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                e.Graphics.DrawString($"Discount Percent: {discountPercent}%", printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                e.Graphics.DrawString($"Discount Code: {discountCode}", printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                e.Graphics.DrawString($"Final Price: {finalPrice:C}", printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                e.Graphics.DrawString($"Customer Money: {customerMoney:C}", printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                e.Graphics.DrawString($"Change: {change:C}", printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                // Partition
+                e.Graphics.DrawString(new string('-', 40), printFont, Brushes.Black, new PointF(0, yPos));
+                yPos += 30;
+
+                // Thank You Message
+                e.Graphics.DrawString("Thank you! Please come again.", printFont, Brushes.Black, new PointF(0, yPos));
             };
 
-            PrintPreviewDialog previewDialog = new PrintPreviewDialog
+            PrintPreviewDialog printPreviewDialog = new PrintPreviewDialog
             {
                 Document = printDocument
             };
 
-            previewDialog.ShowDialog();
+            if (printPreviewDialog.ShowDialog() == DialogResult.OK)
+            {
+                printDocument.Print();
+            }
+        }
+        private void Backbutt_Click(object sender, EventArgs e)
+        {
+                isBackButtonClicked = true;
+                AdminForm admin = new AdminForm(username);
+                admin.Refresh();
+                admin.Show();
+                this.Close();
+            
         }
 
         private void Signout_But_Click(object sender, EventArgs e)
         {
-      
-            DialogResult result = MessageBox.Show("Do you want to logout?", "Logout Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-      
+            isBackButtonClicked = true;
+            DialogResult result = MessageBox.Show("Are you sure you want to log out?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                string connectionString = @"Data Source=LAPTOP-R45B7D8N\SQLEXPRESS;Initial Catalog=Cafedatabase;Integrated Security=True;";
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string updateQuery = "UPDATE Accounts SET ACC_STAT = 'LOGGED OUT' WHERE Username = @username";
-
-                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@username", username);
-                        command.ExecuteNonQuery();
-                    }
-                }
-
-                Login_Interface assignedForm = new Login_Interface();
-                assignedForm.Refresh();
-                assignedForm.Show();
-
-               
-                this.Close();
+                UpdateAccountStatusToLoggedOut(username);
+                Login_Interface loginForm = new Login_Interface();
+                loginForm.Show();
+                this.Hide();
             }
-       
-        }
-
-        private void Backbutt_Click(object sender, EventArgs e)
-        {
-            AdminForm admin = new AdminForm(username);
-            admin.Refresh();
-            admin.Show();
-            this.Close();
-
         }
     }
 }

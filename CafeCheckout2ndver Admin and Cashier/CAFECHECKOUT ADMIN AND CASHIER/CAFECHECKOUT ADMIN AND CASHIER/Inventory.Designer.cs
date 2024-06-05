@@ -40,17 +40,22 @@
             this.Back_but = new Guna.UI2.WinForms.Guna2Button();
             this.AddProducts = new Guna.UI2.WinForms.Guna2Button();
             this.Addaddons = new Guna.UI2.WinForms.Guna2Button();
+            this.SeeArchives = new Guna.UI2.WinForms.Guna2Button();
+            this.Retrive = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2GradientPanel1 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.Inventory_but = new Guna.UI2.WinForms.Guna2Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InvenPictureBox)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InventoryGrid)).BeginInit();
+            this.guna2GradientPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.InvenflowLayoutPanel);
             this.panel1.Controls.Add(this.InvenPictureBox);
-            this.panel1.Location = new System.Drawing.Point(165, 87);
+            this.panel1.Location = new System.Drawing.Point(67, 87);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(257, 418);
             this.panel1.TabIndex = 2;
@@ -76,7 +81,7 @@
             this.panel2.Controls.Add(this.InventoryGrid);
             this.panel2.Controls.Add(this.SearchBox);
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Location = new System.Drawing.Point(428, 87);
+            this.panel2.Location = new System.Drawing.Point(330, 87);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(523, 418);
             this.panel2.TabIndex = 3;
@@ -153,7 +158,7 @@
             this.AddProducts.AnimatedGIF = true;
             this.AddProducts.AutoRoundedCorners = true;
             this.AddProducts.BackColor = System.Drawing.Color.Transparent;
-            this.AddProducts.BorderRadius = 21;
+            this.AddProducts.BorderRadius = 35;
             this.AddProducts.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.AddProducts.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.AddProducts.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -161,9 +166,9 @@
             this.AddProducts.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.AddProducts.Font = new System.Drawing.Font("Rockwell", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.AddProducts.ForeColor = System.Drawing.Color.White;
-            this.AddProducts.Location = new System.Drawing.Point(555, 511);
+            this.AddProducts.Location = new System.Drawing.Point(27, 16);
             this.AddProducts.Name = "AddProducts";
-            this.AddProducts.Size = new System.Drawing.Size(195, 45);
+            this.AddProducts.Size = new System.Drawing.Size(145, 72);
             this.AddProducts.TabIndex = 5;
             this.AddProducts.Text = "Manage Products";
             this.AddProducts.Click += new System.EventHandler(this.AddProducts_Click);
@@ -174,7 +179,7 @@
             this.Addaddons.AnimatedGIF = true;
             this.Addaddons.AutoRoundedCorners = true;
             this.Addaddons.BackColor = System.Drawing.Color.Transparent;
-            this.Addaddons.BorderRadius = 21;
+            this.Addaddons.BorderRadius = 35;
             this.Addaddons.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.Addaddons.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.Addaddons.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -182,12 +187,87 @@
             this.Addaddons.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
             this.Addaddons.Font = new System.Drawing.Font("Rockwell", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Addaddons.ForeColor = System.Drawing.Color.White;
-            this.Addaddons.Location = new System.Drawing.Point(756, 511);
+            this.Addaddons.Location = new System.Drawing.Point(27, 97);
             this.Addaddons.Name = "Addaddons";
-            this.Addaddons.Size = new System.Drawing.Size(195, 45);
+            this.Addaddons.Size = new System.Drawing.Size(145, 72);
             this.Addaddons.TabIndex = 6;
             this.Addaddons.Text = "Manage Addons";
             this.Addaddons.Click += new System.EventHandler(this.Addaddons_Click);
+            // 
+            // SeeArchives
+            // 
+            this.SeeArchives.Animated = true;
+            this.SeeArchives.AnimatedGIF = true;
+            this.SeeArchives.AutoRoundedCorners = true;
+            this.SeeArchives.BackColor = System.Drawing.Color.Transparent;
+            this.SeeArchives.BorderRadius = 35;
+            this.SeeArchives.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.SeeArchives.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.SeeArchives.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.SeeArchives.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.SeeArchives.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.SeeArchives.Font = new System.Drawing.Font("Rockwell", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SeeArchives.ForeColor = System.Drawing.Color.White;
+            this.SeeArchives.Location = new System.Drawing.Point(27, 175);
+            this.SeeArchives.Name = "SeeArchives";
+            this.SeeArchives.Size = new System.Drawing.Size(145, 72);
+            this.SeeArchives.TabIndex = 7;
+            this.SeeArchives.Text = "See Archives";
+            this.SeeArchives.Click += new System.EventHandler(this.SeeArchives_Click);
+            // 
+            // Retrive
+            // 
+            this.Retrive.Animated = true;
+            this.Retrive.AnimatedGIF = true;
+            this.Retrive.AutoRoundedCorners = true;
+            this.Retrive.BackColor = System.Drawing.Color.Transparent;
+            this.Retrive.BorderRadius = 35;
+            this.Retrive.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Retrive.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Retrive.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Retrive.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Retrive.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.Retrive.Font = new System.Drawing.Font("Rockwell", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Retrive.ForeColor = System.Drawing.Color.White;
+            this.Retrive.Location = new System.Drawing.Point(27, 331);
+            this.Retrive.Name = "Retrive";
+            this.Retrive.Size = new System.Drawing.Size(145, 72);
+            this.Retrive.TabIndex = 8;
+            this.Retrive.Text = "Retrieve";
+            this.Retrive.Click += new System.EventHandler(this.Retrive_Click);
+            // 
+            // guna2GradientPanel1
+            // 
+            this.guna2GradientPanel1.Controls.Add(this.Inventory_but);
+            this.guna2GradientPanel1.Controls.Add(this.Addaddons);
+            this.guna2GradientPanel1.Controls.Add(this.Retrive);
+            this.guna2GradientPanel1.Controls.Add(this.SeeArchives);
+            this.guna2GradientPanel1.Controls.Add(this.AddProducts);
+            this.guna2GradientPanel1.Location = new System.Drawing.Point(859, 87);
+            this.guna2GradientPanel1.Name = "guna2GradientPanel1";
+            this.guna2GradientPanel1.Size = new System.Drawing.Size(200, 418);
+            this.guna2GradientPanel1.TabIndex = 9;
+            // 
+            // Inventory_but
+            // 
+            this.Inventory_but.Animated = true;
+            this.Inventory_but.AnimatedGIF = true;
+            this.Inventory_but.AutoRoundedCorners = true;
+            this.Inventory_but.BackColor = System.Drawing.Color.Transparent;
+            this.Inventory_but.BorderRadius = 35;
+            this.Inventory_but.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Inventory_but.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Inventory_but.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Inventory_but.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Inventory_but.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.Inventory_but.Font = new System.Drawing.Font("Rockwell", 15.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Inventory_but.ForeColor = System.Drawing.Color.White;
+            this.Inventory_but.Location = new System.Drawing.Point(27, 253);
+            this.Inventory_but.Name = "Inventory_but";
+            this.Inventory_but.Size = new System.Drawing.Size(145, 72);
+            this.Inventory_but.TabIndex = 9;
+            this.Inventory_but.Text = "Inventories";
+            this.Inventory_but.Click += new System.EventHandler(this.Inventory_but_Click);
             // 
             // Inventory
             // 
@@ -196,8 +276,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1117, 641);
-            this.Controls.Add(this.Addaddons);
-            this.Controls.Add(this.AddProducts);
+            this.Controls.Add(this.guna2GradientPanel1);
             this.Controls.Add(this.Back_but);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panel2);
@@ -211,6 +290,7 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.InventoryGrid)).EndInit();
+            this.guna2GradientPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,5 +308,9 @@
         private Guna.UI2.WinForms.Guna2Button Back_but;
         private Guna.UI2.WinForms.Guna2Button AddProducts;
         private Guna.UI2.WinForms.Guna2Button Addaddons;
+        private Guna.UI2.WinForms.Guna2Button Retrive;
+        private Guna.UI2.WinForms.Guna2Button SeeArchives;
+        private Guna.UI2.WinForms.Guna2GradientPanel guna2GradientPanel1;
+        private Guna.UI2.WinForms.Guna2Button Inventory_but;
     }
 }
